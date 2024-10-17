@@ -1,0 +1,78 @@
+name: Makefile CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+    inputs:
+      testType:
+        description: 'Type of tests to run'
+        required: true
+        default: 'integration'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: configure
+      run: ./autogen.sh --with-drivers=PNG \
+          --without-libtiff --without-libidn --without-libpaper  \
+          --without-tesseract --without-ijs  --without-urf  --without-so   \
+          --without-cal --without-pdftoraster --with-pcl=gpcl6 \
+          --with-pdf=no -with-gpdl=no --with-gs=no --with-xps=no \
+          --without-jbig2dec --disable-gtk \
+          --disable-cups --disable-openjpeg
+
+    - name: Install dependencies
+      run: make gpcl6 -j
+
+    - name: Run check
+      run: ls bin
+  
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: configure
+      run: ./autogen.sh --with-drivers=PNG \
+          --without-libtiff --without-libidn --without-libpaper  \
+          --without-tesseract --without-ijs  --without-urf  --without-so   \
+          --without-cal --without-pdftoraster --with-pcl=gpcl6 \
+          --with-pdf=no -with-gpdl=no --with-gs=no --with-xps=no \
+          --without-jbig2dec --disable-gtk \
+          --disable-cups --disable-openjpeg
+
+    - name: Install dependencies
+      run: make gpcl6 -j
+
+    - name: Run check
+      run: ls bin
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+  
+      - name: configure
+        run: ./autogen.sh --with-drivers=PNG \
+            --without-libtiff --without-libidn --without-libpaper  \
+            --without-tesseract --without-ijs  --without-urf  --without-so   \
+            --without-cal --without-pdftoraster --with-pcl=gpcl6 \
+            --with-pdf=no -with-gpdl=no --with-gs=no --with-xps=no \
+            --without-jbig2dec --disable-gtk \
+            --disable-cups --disable-openjpeg
+  
+      - name: Install dependencies
+        run: make gpcl6 -j
+  
+      - name: Run check
+        run: ls bin
+    
+      
