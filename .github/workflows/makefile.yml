@@ -21,57 +21,43 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: configure
-      run: ./autogen.sh --with-drivers=PNG \
-          --without-libtiff --without-libidn --without-libpaper  \
-          --without-tesseract --without-ijs  --without-urf  --without-so   \
-          --without-cal --without-pdftoraster --with-pcl=gpcl6 \
-          --with-pdf=no -with-gpdl=no --with-gs=no --with-xps=no \
-          --without-jbig2dec --disable-gtk \
-          --disable-cups --disable-openjpeg
+      run: ./autogen.sh --build=x86-linux-gnu --with-drivers=PNG --without-libtiff --without-libidn --without-libpaper  --without-tesseract --without-ijs  --without-urf  --without-so   --without-cal --without-pdftoraster --with-pcl=gpcl6 --with-pdf=no -with-gpdl=no --with-gs=no --with-xps=no --without-jbig2dec --disable-gtk --disable-cups --disable-openjpeg
 
     - name: Install dependencies
       run: make gpcl6 -j
 
     - name: Run check
-      run: ls bin
+      run: |
+          ls bin
+          ./bin/gpcl6 -h
   
   build-macos:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
-
+    - name: Install Auto conf
+      run: brew install autoconf automake libtool
     - name: configure
-      run: ./autogen.sh --with-drivers=PNG \
-          --without-libtiff --without-libidn --without-libpaper  \
-          --without-tesseract --without-ijs  --without-urf  --without-so   \
-          --without-cal --without-pdftoraster --with-pcl=gpcl6 \
-          --with-pdf=no -with-gpdl=no --with-gs=no --with-xps=no \
-          --without-jbig2dec --disable-gtk \
-          --disable-cups --disable-openjpeg
-
+      run: ./autogen.sh --with-drivers=PNG --without-libtiff --without-libidn --without-libpaper  --without-tesseract --without-ijs  --without-urf  --without-so   --without-cal --without-pdftoraster --with-pcl=gpcl6 --with-pdf=no -with-gpdl=no --with-gs=no --with-xps=no --without-jbig2dec --disable-gtk --disable-cups --disable-openjpeg
     - name: Install dependencies
-      run: make gpcl6 -j
+      run: | 
+          make gpcl6 -j
+          make libgpcl6 -j
 
     - name: Run check
-      run: ls bin
+      run: |
+          ls bin
+          ./bin/gpcl6 -h
 
   build-windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-  
-      - name: configure
-        run: ./autogen.sh --with-drivers=PNG \
-            --without-libtiff --without-libidn --without-libpaper  \
-            --without-tesseract --without-ijs  --without-urf  --without-so   \
-            --without-cal --without-pdftoraster --with-pcl=gpcl6 \
-            --with-pdf=no -with-gpdl=no --with-gs=no --with-xps=no \
-            --without-jbig2dec --disable-gtk \
-            --disable-cups --disable-openjpeg
-  
-      - name: Install dependencies
-        run: make gpcl6 -j
-  
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: make
+        run: |
+            cd gpdl
+            nmake -f pspcl6_msvc.mak 
       - name: Run check
         run: ls bin
     
