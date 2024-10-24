@@ -51,18 +51,16 @@ jobs:
 
   build-windows:
     runs-on: windows-latest
+    
     defaults:
       run:
         shell: msys2 {0}
     steps:
-      - uses: actions/checkout@v3
-      - uses: msys2/setup-msys2@v2
-        with:
-          msystem: MINGW64
-          update: true
-          install: git mingw-w64-x86_64-gcc mingw-w64-x86_64-autotools
+      - run: git config --global core.autocrlf input
+      - uses: actions/checkout@v2
+      - uses: cygwin/cygwin-install-action@master
       - name: configure
-        run: ./autogen.sh --with-drivers=PNG --without-libtiff --without-libidn --without-libpaper  --without-tesseract --without-ijs  --without-urf  --without-so   --without-cal --without-pdftoraster --with-pcl=gpcl6 --with-pdf=no -with-gpdl=no --with-gs=no --with-xps=no --without-jbig2dec --disable-gtk --disable-cups --disable-openjpeg
+        run: bash ./autogen.sh --with-drivers=PNG --without-libtiff --without-libidn --without-libpaper  --without-tesseract --without-ijs  --without-urf  --without-so   --without-cal --without-pdftoraster --with-pcl=gpcl6 --with-pdf=no -with-gpdl=no --with-gs=no --with-xps=no --without-jbig2dec --disable-gtk --disable-cups --disable-openjpeg
       - name: Install dependencies
         run: | 
             make gpcl6 -j
