@@ -51,10 +51,6 @@ jobs:
 
   build-windows:
     runs-on: windows-latest
-    
-    defaults:
-      run:
-        shell: msys2 {0}
     steps:
       - run: git config --global core.autocrlf input
       - uses: actions/checkout@v2
