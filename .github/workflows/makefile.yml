@@ -53,12 +53,15 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ilammy/msvc-dev-cmd@v1
-      - name: make
-        run: |
-            cd gpdl
-            nmake -f pspcl6_msvc.mak 
+      - uses: cygwin/cygwin-install-action@master
+      - name: configure
+        run: bash ./autogen.sh --with-drivers=PNG --without-libtiff --without-libidn --without-libpaper  --without-tesseract --without-ijs  --without-urf  --without-so   --without-cal --without-pdftoraster --with-pcl=gpcl6 --with-pdf=no -with-gpdl=no --with-gs=no --with-xps=no --without-jbig2dec --disable-gtk --disable-cups --disable-openjpeg
+      - name: Install dependencies
+        run: | 
+            make gpcl6 -j
+            make libgpcl6 -j
+  
       - name: Run check
-        run: ls bin
-    
-      
+        run: |
+            ls bin
+            ./bin/gpcl6.exe -h
