@@ -55,6 +55,30 @@ jobs:
       - run: git config --global core.autocrlf input
       - uses: actions/checkout@v2
       - uses: cygwin/cygwin-install-action@master
+      - name: install Cygwin build environment
+        uses: cygwin/cygwin-install-action@v4
+        with:
+          # The packages are listed in (alphabetically sorted) blocks:
+          # The first block is for mandatory dependencies.
+          # The second block is for optional dependencies needed when building from a release tarball.
+          # The third block is for additional dependencies needed when building from a repository checkout.
+          # The fourth block is for additional run-time dependencies (to run test suite) that aren't needed to build.
+
+          # FIXME: libklu-devel should depend on libbtf-devel.  Install it manually even if Octave doesn't explicitly use it.
+          packages: >-
+            autoconf
+            automake
+            make
+            gcc-g++
+            gcc-fortran
+            bison
+            dash
+            flex
+            gperf
+            libtool
+            liblapack-devel
+            libpcre2-devel
+            libreadline-devel
       - name: configure
         run: bash ./autogen.sh --with-drivers=PNG --without-libtiff --without-libidn --without-libpaper  --without-tesseract --without-ijs  --without-urf  --without-so   --without-cal --without-pdftoraster --with-pcl=gpcl6 --with-pdf=no -with-gpdl=no --with-gs=no --with-xps=no --without-jbig2dec --disable-gtk --disable-cups --disable-openjpeg
       - name: Install dependencies
